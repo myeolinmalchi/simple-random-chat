@@ -21,14 +21,16 @@ class ChatManager(a: ActorRef, b: ActorRef) extends Actor with ActorLogging {
 	context.watch(b)
 	
 	override def receive: Receive = {
-		case Terminated(_) =>
-			a ! ChatTerminated
-			b ! ChatTerminated
-		case User.Quit =>
-			a ! ChatTerminated
-			b ! ChatTerminated
+		case Terminated(_) => stop()
+		case User.Quit => stop()
 		case msg: ChatMessage =>
 			a ! msg
 			b ! msg
+	}
+	
+	private def stop(): Unit = {
+		a ! ChatTerminated
+		b ! ChatTerminated
+		context.stop(self)
 	}
 }
