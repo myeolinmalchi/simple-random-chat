@@ -11,7 +11,7 @@ const chatRender = (msg) => {
 }
 
 const name = prompt("사용할 닉네임을 입력해주세요.")
-const socket = new WebSocket("ws://localhost:8000/chat?name="+name)
+const socket = new WebSocket('ws://'+location.host+'/chat?name='+name)
 const chatbox = document.getElementById("chatbox")
 const messageinput = document.getElementById("messageinput")
 const sendbutton = document.getElementById("sendbutton")
