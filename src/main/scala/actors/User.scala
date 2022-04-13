@@ -27,15 +27,16 @@ class User(name: String, matchManager: ActorRef) extends Actor with ActorLogging
 	
 	def awaitPartner(outgoing: ActorRef): Receive = {
 		case Matched(chatManager, partner) =>
-			println(s"[${name}] Matched with partner.")
 			outgoing ! OutgoingMessage(partner)
 			context.become(withPartner(chatManager, outgoing))
 	}
 	
 	def withPartner(chatManager: ActorRef, outgoing: ActorRef): Receive = {
 		case IncomingMessage("/quit") =>
-			println(s"User $name quit.")
 			chatManager ! Quit
+		case IncomingMessage("/terminate") =>
+			println(s"User $name terminate.")
+			context.stop(self)
 		case IncomingMessage(msg) =>
 			println(s"[${name}] Sent a message: $msg")
 			chatManager ! ChatManager.ChatMessage(s"$name: $msg")
