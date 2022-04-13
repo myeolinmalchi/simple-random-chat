@@ -1,11 +1,11 @@
 import actors.{MatchRouter, User}
-import akka.NotUsed
-import akka.actor.{ActorSystem, PoisonPill, Props}
+import akka.{Done, NotUsed}
+import akka.actor.{ActorSystem, PoisonPill, Props, Terminated}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{Message, TextMessage}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import akka.stream.{ActorMaterializer, OverflowStrategy}
+import akka.stream.{ActorMaterializer, CompletionStrategy, OverflowStrategy}
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.io.StdIn
@@ -19,7 +19,6 @@ object Server extends App{
 	
 	def newUser(name: String): Flow[Message, Message, NotUsed] = {
 		val userActor = system.actorOf(Props(new User(name, matchRouter)))
-		println(s"actors.User $name has been connected.")
 		
 		val incomingMessages: Sink[Message, NotUsed] = {
 			Flow[Message].map {
