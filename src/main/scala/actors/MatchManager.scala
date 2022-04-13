@@ -8,7 +8,7 @@ class MatchManager extends Actor with ActorLogging{
 	
 	def noWaiting(chatList: List[ActorRef]): Receive = {
 		case User.Waiting(name) =>
-			println(s"actors.User waiting for another user.")
+			println(s"User waiting for another user.")
 			context.become(withWaiting(chatList, sender(), name))
 		case Terminated(chat) =>
 			val newList = chatList filterNot chat.==
