@@ -39,6 +39,7 @@ class User(name: String, matchManager: ActorRef) extends Actor with ActorLogging
 			chatManager ! Quit
 		case IncomingMessage("/terminate") =>
 			println(s"User $name terminate.")
+			chatManager ! Quit
 			context.stop(self)
 		case IncomingMessage(msg) =>
 			println(s"[${name}] Sent a message: $msg")

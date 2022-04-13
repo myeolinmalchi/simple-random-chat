@@ -10,6 +10,8 @@ lazy val root = (project in file("."))
 val akkaVersion = "2.6.19"
 val akkaHttpVersion = "10.2.9"
 
+//enablePlugins(JavaAppPackaging)
+
 libraryDependencies ++= Seq(
     "com.typesafe.akka" %% "akka-actor" % akkaVersion,
     "com.typesafe.akka" %% "akka-testkit" % akkaVersion,
