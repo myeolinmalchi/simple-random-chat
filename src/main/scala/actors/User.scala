@@ -33,7 +33,9 @@ class User(name: String, matchManager: ActorRef) extends Actor with ActorLogging
 	}
 	
 	def withPartner(chatManager: ActorRef, outgoing: ActorRef): Receive = {
-		case IncomingMessage("/quit") => chatManager ! Quit
+		case IncomingMessage("/quit") =>
+			println(s"User $name quit.")
+			chatManager ! Quit
 		case IncomingMessage(msg) =>
 			println(s"[${name}] Sent a message: $msg")
 			chatManager ! ChatManager.ChatMessage(s"$name: $msg")
