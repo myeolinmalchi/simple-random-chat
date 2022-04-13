@@ -29,6 +29,9 @@ class User(name: String, matchManager: ActorRef) extends Actor with ActorLogging
 		case Matched(chatManager, partner) =>
 			outgoing ! OutgoingMessage(partner)
 			context.become(withPartner(chatManager, outgoing))
+		case IncomingMessage("/terminate") =>
+			println(s"User $name terminate.")
+			context.stop(self)
 	}
 	
 	def withPartner(chatManager: ActorRef, outgoing: ActorRef): Receive = {
