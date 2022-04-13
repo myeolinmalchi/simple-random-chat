@@ -18,7 +18,7 @@ const sendbutton = document.getElementById("sendbutton")
 const refreshbutton = document.getElementById("refreshbutton")
 
 window.addEventListener('unload', (e) => {
-    socket.send("/quit")
+    socket.send("/terminate")
     socket.close()
 })
 
