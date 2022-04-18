@@ -18,7 +18,6 @@ const sendbutton = document.getElementById("sendbutton")
 const refreshbutton = document.getElementById("refreshbutton")
 
 window.addEventListener('unload', (e) => {
-    socket.send("/terminate")
     socket.close()
 })
 
@@ -52,5 +51,13 @@ sendbutton.addEventListener('click', () => {
     const msg = messageinput.value
     messageinput.value=""
     socket.send(msg)
+})
+
+messageinput.addEventListener('keypress', (e) => {
+    if(e.key === "Enter") {
+        const msg = messageinput.value
+        messageinput.value=""
+        socket.send(msg)
+    }
 })
 

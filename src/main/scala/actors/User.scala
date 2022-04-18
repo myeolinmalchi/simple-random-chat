@@ -29,18 +29,11 @@ class User(name: String, matchManager: ActorRef) extends Actor{
 		case Matched(chatManager, partner) =>
 			outgoing ! OutgoingMessage(s"${partner}님과 연결되었습니다.")
 			context.become(withPartner(chatManager, outgoing))
-		case IncomingMessage("/terminate") =>
-			println(s"User $name terminate.")
-			context.stop(self)
 	}
 	
 	def withPartner(chatManager: ActorRef, outgoing: ActorRef): Receive = {
 		case IncomingMessage("/quit") =>
 			chatManager ! Quit
-		case IncomingMessage("/terminate") =>
-			println(s"User $name terminate.")
-			chatManager ! Quit
-			context.stop(self)
 		case IncomingMessage(msg) =>
 			println(s"[${name}] Sent a message: $msg")
 			chatManager ! ChatManager.ChatMessage(s"$name: $msg")
