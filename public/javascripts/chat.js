@@ -17,17 +17,10 @@ const messageinput = document.getElementById("messageinput")
 const sendbutton = document.getElementById("sendbutton")
 const refreshbutton = document.getElementById("refreshbutton")
 
-
-
-window.addEventListener('beforeunload', (e) => {
+window.addEventListener('unload', (e) => {
     socket.send("/terminate")
     socket.close()
 })
-
-// window.addEventListener('unload', (e) => {
-//     socket.send("/terminate")
-//     socket.close()
-// })
 
 refreshbutton.addEventListener('click', () => {
     socket.send("/quit")
