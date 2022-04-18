@@ -47,7 +47,7 @@ object Server extends App{
 			getFromDirectory("public")
 		}
 	
-	val (host, port) = ("0.0.0.0", 8000)
+	val (host, port) = ("0.0.0.0", 9000)
 	val binding = Await.result(Http().newServerAt(host, port).bind(route), 3 seconds)
 	
 	println(s"Server started at ${host}:${port}, press enter to kill server")

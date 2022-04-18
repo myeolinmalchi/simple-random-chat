@@ -19,10 +19,15 @@ const refreshbutton = document.getElementById("refreshbutton")
 
 
 
-window.addEventListener('unload', (e) => {
+window.addEventListener('beforeunload', (e) => {
     socket.send("/terminate")
     socket.close()
 })
+
+// window.addEventListener('unload', (e) => {
+//     socket.send("/terminate")
+//     socket.close()
+// })
 
 refreshbutton.addEventListener('click', () => {
     socket.send("/quit")
