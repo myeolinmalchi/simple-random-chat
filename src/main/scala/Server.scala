@@ -1,11 +1,11 @@
-import actors.{MatchRouter, User}
+import actors.{MatchManager, MatchRouter, User}
 import akka.{Done, NotUsed}
 import akka.actor.{ActorSystem, PoisonPill, Props, Terminated}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{Message, TextMessage}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.scaladsl.{Flow, Sink, Source}
-import akka.stream.{ActorMaterializer, CompletionStrategy, OverflowStrategy}
+import akka.stream.{ActorMaterializer, Attributes, CompletionStrategy, OverflowStrategy}
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
 import scala.io.StdIn
@@ -27,13 +27,15 @@ object Server extends App{
 		}
 		
 		val outgoingMessages: Source[Message, NotUsed] =
-			Source.actorRef[User.OutgoingMessage](10, OverflowStrategy.fail)
+			Source.actorRef[User.OutgoingMessage](1024, OverflowStrategy.dropHead)
 					.mapMaterializedValue { outActor =>
 						userActor ! User.Connected(outActor)
 						NotUsed
 					}.map { outMsg: User.OutgoingMessage => TextMessage(outMsg.msg) }
+			
 		
 		Flow.fromSinkAndSource(incomingMessages, outgoingMessages)
+				.addAttributes(Attributes.inputBuffer(initial=1, max=1024))
 	}
 	
 	val route =
