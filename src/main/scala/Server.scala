@@ -23,7 +23,7 @@ object Server extends App{
 		val incomingMessages: Sink[Message, NotUsed] = {
 			Flow[Message].map {
 				case TextMessage.Strict(text) => User.IncomingMessage(text)
-			}.to(Sink.actorRef[User.IncomingMessage](userActor, PoisonPill))
+			}.to(Sink.actorRef[User.IncomingMessage](userActor, Terminated))
 		}
 		
 		val outgoingMessages: Source[Message, NotUsed] =
