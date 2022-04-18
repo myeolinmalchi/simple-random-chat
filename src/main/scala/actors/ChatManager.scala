@@ -1,6 +1,6 @@
 package actors
 
-import akka.actor.{Actor, ActorLogging, ActorRef, Terminated}
+import akka.actor.{Actor, ActorLogging, ActorRef, PoisonPill, Terminated}
 import akka.util.Timeout
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
@@ -11,9 +11,8 @@ object ChatManager {
 	case class ChatMessage(msg: String)
 	case object ChatTerminated
 }
-class ChatManager(a: ActorRef, b: ActorRef) extends Actor with ActorLogging {
+class ChatManager(a: ActorRef, b: ActorRef) extends Actor {
 	
-	println("New Chatroom has been opened.")
 	import ChatManager._
 	implicit val timeout: Timeout = Timeout(1 second)
 	implicit val executionContext: ExecutionContext = context.dispatcher
@@ -31,6 +30,6 @@ class ChatManager(a: ActorRef, b: ActorRef) extends Actor with ActorLogging {
 	private def stop(): Unit = {
 		a ! ChatTerminated
 		b ! ChatTerminated
-		context.stop(self)
+		self ! PoisonPill
 	}
 }
