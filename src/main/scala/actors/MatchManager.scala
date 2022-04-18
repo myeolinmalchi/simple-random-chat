@@ -2,7 +2,7 @@ package actors
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props, Terminated}
 
-class MatchManager extends Actor with ActorLogging{
+class MatchManager extends Actor {
 	
 	override def receive: Receive = noWaiting(List())
 	
@@ -10,6 +10,7 @@ class MatchManager extends Actor with ActorLogging{
 		case User.Waiting(name) =>
 			context.become(withWaiting(chatList, sender(), name))
 		case Terminated(chat) =>
+			println(s"Chatroom $chat terminated.")
 			val newList = chatList filterNot chat.==
 			context.become(noWaiting(newList))
 	}
@@ -23,6 +24,7 @@ class MatchManager extends Actor with ActorLogging{
 			context.watch(newChat)
 			context.become(noWaiting(newChat::chatList))
 		case Terminated(chat) =>
+			println(s"Chatroom $chat terminated.")
 			val newList = chatList filterNot chat.==
 			context.become(withWaiting(newList, waitingUser, waitingUserName))
 	}
