@@ -28,6 +28,7 @@ class ChatManager(a: ActorRef, b: ActorRef) extends Actor {
 	}
 	
 	private def stop(): Unit = {
+		println(s"Chat terminated: $self")
 		a ! ChatTerminated
 		b ! ChatTerminated
 		self ! PoisonPill
