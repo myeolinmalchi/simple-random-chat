@@ -10,12 +10,15 @@ const chatRender = (msg) => {
     return chat
 }
 
-const name = prompt("사용할 닉네임을 입력해주세요.")
-const socket = new WebSocket('ws://'+location.host+'/chat?name='+name)
+const socket = new WebSocket(`ws://${location.host}/chat`)
+const accessorCountSource = new EventSource(`http://${location.host}/accessorCount`)
 const chatbox = document.getElementById("chatbox")
 const messageinput = document.getElementById("messageinput")
 const sendbutton = document.getElementById("sendbutton")
 const refreshbutton = document.getElementById("refreshbutton")
+const currentaccessorcountbox = document.getElementById("current_accessor")
+const idbox = document.getElementById("id")
+
 
 window.addEventListener('unload', (e) => {
     socket.close()
@@ -25,7 +28,14 @@ refreshbutton.addEventListener('click', () => {
     socket.send("/quit")
 })
 
-socket.onmessage = (e) => {
+
+const awaitMyId = (e) => {
+    const msg = e.data
+    idbox.innerText = msg
+    socket.onmessage = socketMessageHandler
+}
+
+const socketMessageHandler = (e) => {
     const msg = e.data;
     if(msg === "/terminated") {
         chatbox.innerHTML = ''
@@ -34,12 +44,15 @@ socket.onmessage = (e) => {
     } else chatbox.appendChild(chatRender(msg))
 }
 
+socket.onmessage = awaitMyId
+
 socket.onerror = (e) => {
+    alert("오류가 발생했습니다.")
     console.log(e)
 }
 
-socket.onopen = (e) => {    
-    chatbox.appendChild(chatRender(`${name}님 환영합니다!`))
+socket.onopen = (e) => {
+    chatbox.appendChild(chatRender(`채팅 서버에 접속되었습니다.`))
     chatbox.appendChild(chatRender(`상대방을 기다리는 중입니다.`))
 }
 
@@ -60,4 +73,9 @@ messageinput.addEventListener('keypress', (e) => {
         socket.send(msg)
     }
 })
+
+accessorCountSource.onmessage = (e) => {
+    const msg = e.data
+    currentaccessorcountbox.innerText = `접속자: ${msg}명`
+}
 
