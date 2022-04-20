@@ -23,6 +23,7 @@ class User(name: String, matchManager: ActorRef) extends Actor{
 			println(s"[$name] Connected with server.")
 			context.become(awaitPartner(outgoing))
 			matchManager ! Waiting(name)
+			outgoing ! OutgoingMessage(name)
 	}
 	
 	def awaitPartner(outgoing: ActorRef): Receive = {
