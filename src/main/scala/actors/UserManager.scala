@@ -33,7 +33,7 @@ class UserManager(matchRouter: ActorRef, eventSource: ActorRef) extends Actor wi
 			
 		case Terminated(user) =>
 			val newUsers = users.filterNot(_._2.path.equals(user.path))
-			println(s"User terminated: $user")
+			println(s"${user.path.name} terminated.")
 			eventSource ! StreamingAccessorCount.UpdateAccessorCount(newUsers.size)
 			context.become(withUsers(newUsers, userCounter))
 	}
