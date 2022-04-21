@@ -24,7 +24,7 @@ class UserManager(matchRouter: ActorRef, eventSource: ActorRef) extends Actor wi
 	def withUsers(users: Map[String, ActorRef], userCounter: Int): Receive = {
 		case NewUser =>
 			val newUserName = s"User$userCounter"
-			val newUser = context.actorOf(Props(new User(newUserName, matchRouter)))
+			val newUser = context.actorOf(Props(new User(newUserName, matchRouter)), newUserName)
 			val newUsers = users + (newUserName -> newUser)
 			context.watch(newUser)
 			context.become(withUsers(newUsers, userCounter + 1))
@@ -33,17 +33,16 @@ class UserManager(matchRouter: ActorRef, eventSource: ActorRef) extends Actor wi
 			
 		case Terminated(user) =>
 			val newUsers = users.filterNot(_._2.path.equals(user.path))
-			println(s"User $user terminated")
+			println(s"User terminated: $user")
 			eventSource ! StreamingAccessorCount.UpdateAccessorCount(newUsers.size)
 			context.become(withUsers(newUsers, userCounter))
 	}
 	
 	def userMsgFlow(userActor: ActorRef): Flow[Message, Message, NotUsed] = {
-		val incomingMessages: Sink[Message, NotUsed] = {
+		val incomingMessages: Sink[Message, NotUsed] =
 			Flow[Message].map {
 				case TextMessage.Strict(text) => User.IncomingMessage(text)
 			}.to(Sink.actorRef[User.IncomingMessage](userActor, PoisonPill))
-		}
 		
 		val outgoingMessages: Source[Message, NotUsed] =
 			Source.actorRef[User.OutgoingMessage](1024, OverflowStrategy.dropHead)
@@ -55,6 +54,5 @@ class UserManager(matchRouter: ActorRef, eventSource: ActorRef) extends Actor wi
 		
 		Flow.fromSinkAndSource(incomingMessages, outgoingMessages)
 				.addAttributes(Attributes.inputBuffer(initial=1, max=1024))
-		
 	}
 }
