@@ -29,6 +29,6 @@ Distribution: http://www.akkahttprandomchat.p-e.kr/
 
 ![슬라이드3](https://user-images.githubusercontent.com/95765721/164454969-ac4df7dd-1b6e-4242-a172-4061cdf0e69c.JPG)
 
-- `ChatManager` 액터는 매칭된 두 `User` 액터간의 메세지 전달 및 채팅의 종료시점을 관리한다.
+`ChatManager` 액터는 매칭된 두 `User` 액터간의 메세지 전달 및 채팅의 종료시점을 관리한다.
 
 ![슬라이드4](https://user-images.githubusercontent.com/95765721/164454989-4dad6b84-adaf-4ec9-bcea-fef18e8eacae.JPG)
