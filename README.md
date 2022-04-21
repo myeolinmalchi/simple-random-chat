@@ -12,7 +12,7 @@ To run: `sbt run`
 
 `UserManager`는 `User`의 부모 액터로, `User`의 생성 및 생명주기를 관리한다.
 
-사진2
+![슬라이드2](https://user-images.githubusercontent.com/95765721/164450171-591cab63-3fbd-4b1b-844e-760de52ddfd8.JPG)
 
 새로 접속했거나 채팅이 종료된 클라이언트의 `User` 액터는 `MatchRouter` 액터에게, 자신을 대기열에 추가하라는 요청(`Waiting`)을 보낸다.
 
