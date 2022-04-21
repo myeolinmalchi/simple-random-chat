@@ -1,5 +1,7 @@
 # Simple Random Chat
 
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fmyeolinmalchi%2Fsimple-random-chat&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+
 Tech: Scala(2.13.8), Akka Actor, Akka Stream, Akka Http
 
 To run: `sbt run`
