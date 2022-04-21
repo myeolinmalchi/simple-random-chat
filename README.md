@@ -4,7 +4,7 @@ Tech: Scala(2.13.8), Akka Actor, Akka Stream, Akka Http
 
 To run: `sbt run`
 
-Distribution: http://www.akkahttprandomchat.p-e.kr/
+Distribution: ~~http://www.akkahttprandomchat.p-e.kr/~~
 
 ## Architecture
 
