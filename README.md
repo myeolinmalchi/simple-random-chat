@@ -4,8 +4,6 @@ Tech: Scala(2.13.8), Akka Actor, Akka Stream, Akka Http
 
 To run: `sbt run`
 
-Distribution: ~~http://www.akkahttprandomchat.p-e.kr/~~
-
 ## Architecture
 
 클라이언트는 `User` 액터와 1:1로 연결되어 웹소켓을 통해 통신한다.
