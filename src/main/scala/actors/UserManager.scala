@@ -42,8 +42,11 @@ class UserManager(matchRouter: ActorRef, eventSource: ActorRef) extends Actor wi
 		val incomingMessages: Sink[Message, NotUsed] =
 			Flow[Message].map {
 				case TextMessage.Strict(text) => User.IncomingMessage(text)
-			}.to(Sink.actorRef[User.IncomingMessage](userActor, PoisonPill))
-		
+			}.to(Sink.actorRef[User.IncomingMessage](
+				ref = userActor,
+				onCompleteMessage = PoisonPill,
+				onFailureMessage = { _: Throwable => PoisonPill}
+			))
 		val outgoingMessages: Source[Message, NotUsed] =
 			Source.actorRef[User.OutgoingMessage](1024, OverflowStrategy.dropHead)
 					.mapMaterializedValue { outActor =>

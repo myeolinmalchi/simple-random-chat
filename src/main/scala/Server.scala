@@ -1,14 +1,14 @@
-import actors.{MatchManager, MatchRouter, StreamingAccessorCount, User, UserManager}
-import akka.{Done, NotUsed}
-import akka.actor.{ActorSystem, PoisonPill, Props, Terminated}
+import actors.{MatchRouter, StreamingAccessorCount, UserManager}
+import akka.NotUsed
+import akka.actor.{ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.model.sse.ServerSentEvent
-import akka.http.scaladsl.model.ws.{Message, TextMessage}
+import akka.http.scaladsl.model.ws.Message
 import akka.http.scaladsl.server.Directives._
 import akka.pattern.ask
-import akka.stream.scaladsl.{BroadcastHub, Flow, Keep, Sink, Source}
-import akka.stream.{ActorMaterializer, Attributes, CompletionStrategy, DelayOverflowStrategy, OverflowStrategy}
+import akka.stream.scaladsl.{BroadcastHub, Flow, Keep, Source}
+import akka.stream.{ActorMaterializer, DelayOverflowStrategy, OverflowStrategy}
 import akka.util.Timeout
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
@@ -42,9 +42,7 @@ object Server extends App{
 	)
 	
 	lazy val route =
-		(get & pathSingleSlash) {
-			getFromFile("public/htmls/chat.html")
-		} ~ path("chat") {
+		path("chat") {
 			onComplete(userManager ? UserManager.NewUser) {
 				case Success(flow: Flow[Message, Message, NotUsed]) =>
 					handleWebSocketMessages(flow)
@@ -52,7 +50,7 @@ object Server extends App{
 			}
 		} ~ pathPrefix("assets") {
 			getFromDirectory("public")
-		} ~ path("accessorCount") {
+		} ~ path("visitor") {
 			complete{
 				system.scheduler.scheduleOnce(2.second) {
 					streamingActor ! StreamingAccessorCount.OfferAccessorCount
