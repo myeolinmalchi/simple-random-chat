@@ -3,6 +3,7 @@ import akka.NotUsed
 import akka.actor.{ActorSystem, Props}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes
+import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.sse.ServerSentEvent
 import akka.http.scaladsl.model.ws.Message
 import akka.http.scaladsl.server.Directives._
@@ -51,15 +52,17 @@ object Server extends App{
 		} ~ pathPrefix("assets") {
 			getFromDirectory("public")
 		} ~ path("visitor") {
-			complete{
-				system.scheduler.scheduleOnce(2.second) {
-					streamingActor ! StreamingAccessorCount.OfferAccessorCount
+			respondWithHeaders(RawHeader("Access-Control-Allow-Origin", "*")) {
+				complete{
+					system.scheduler.scheduleOnce(2.second) {
+						streamingActor ! StreamingAccessorCount.OfferAccessorCount
+					}
+					eventsSource
 				}
-				eventsSource
 			}
 		}
 	
-	val (host, port) = ("0.0.0.0", 3000)
+	val (host, port) = ("0.0.0.0", 5000)
 	val binding = Await.result(Http().newServerAt(host, port).bind(route), 3 seconds)
 	
 	println(s"Server started at ${host}:${port}, press enter to kill server")
